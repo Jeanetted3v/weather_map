@@ -1,0 +1,18 @@
+<mat-dialog-content class="content" animate.enter="fade-in" animate.leave="fade-out">
+  <h2>{{ station.name }}</h2>
+  <p>Lat: {{ station.lat }} | Lon: {{ station.lon }}</p>
+
+  <div *ngIf="forecastText">
+    <h3>2-Hour Forecast</h3>
+    <p>{{ forecastText }}</p>
+  </div>
+
+  <div *ngIf="openMeteoData" style="margin-top: 16px;">
+    <h3>Recent Weather (Open-Meteo)</h3>
+    <canvas baseChart [data]="lineChartData" chartType="line"></canvas>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>
