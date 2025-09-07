@@ -26,6 +26,25 @@ export class WeatherService {
     );
   }
 
+  getSingaporeForecast10Days(): Observable<any> {
+    const today = new Date();
+    const start = today.toISOString().split('T')[0]; // YYYY-MM-DD
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + 9); // today + 9 = 10 days total
+    const end = endDate.toISOString().split('T')[0];
+    const params = [
+      'latitude=1.29',
+      'longitude=103.85',
+      'hourly=relativehumidity_2m,direct_radiation',   // hourly radiation, humidity
+      'daily=temperature_2m_max,temperature_2m_min',   // daily temps
+      'timezone=Asia/Singapore',
+      `start_date=${start}`,
+      `end_date=${end}`
+    ];
+    return this.http.get(`${this.openMeteoApi}?${params.join('&')}`);
+  }
+  
+
   /**
    * Get the latest 2-hour forecast for all Singapore stations
    */

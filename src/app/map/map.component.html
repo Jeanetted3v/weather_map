@@ -1,7 +1,54 @@
-<div class="map-wrapper" animate.enter="fade-in">
-  <div
-    leaflet
-    [leafletOptions]="mapOptions"
-    (leafletMapReady)="onMapReady($event)">
+<div class="map-shell">
+  <div class="map-el"
+       leaflet
+       [leafletOptions]="mapOptions"
+       (leafletMapReady)="onMapReady($event)">
   </div>
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <div class="autocomplete-wrapper">
+        <input type="text"
+               class="autocomplete-input"
+               [formControl]="searchControl"
+               (keydown.enter)="acceptSuggestion()"
+               (keydown.tab)="acceptSuggestion()"
+               placeholder="Search station">
+    
+        <!-- inline suggestion -->
+        <span class="autocomplete-suggestion">
+          {{ suggestion }}
+        </span>
+      </div>
+    </div>
+
+  <!-- Floating dashboard with charts -->
+  <section class="overlay overlay-tr">
+    <h3>Singapore Weather (10-day Forecast)</h3>
+  
+    <div class="chart-block">
+      <canvas baseChart 
+              [data]="sgRadiationChartData" 
+              [options]="radiationChartOptions" 
+              [type]="'line'">
+      </canvas>
+    </div>
+  
+    <div class="chart-block">
+      <canvas baseChart 
+              [data]="sgHumidityChartData" 
+              [options]="humidityChartOptions" 
+              [type]="'line'">
+      </canvas>
+    </div>
+  
+    <div class="chart-block">
+      <canvas baseChart 
+              [data]="sgTemperatureChartData" 
+              [options]="tempChartOptions" 
+              [type]="'line'">
+      </canvas>
+    </div>
+  </section>
+  
 </div>

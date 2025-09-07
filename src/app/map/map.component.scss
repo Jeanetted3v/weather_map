@@ -2,11 +2,160 @@
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
 @import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-.map-wrapper {
-  height: calc(100vh - 64px);
+:host { 
+  display: block; 
+}
+
+/* ----------------- Map ----------------- */
+.map-shell {
+  position: relative;
+  height: 100vh;   /* Fill the screen (no white gap at bottom) */
   width: 100%;
 }
 
-.map-wrapper > div {
-  height: 100%;
+.map-el {
+  position: absolute;
+  inset: 0;        /* top:0; right:0; bottom:0; left:0 */
+}
+
+/* ----------------- Search Bar ----------------- */
+.search-bar {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  width: 320px;
+  max-width: 80%; /* shrink gracefully on mobile */
+}
+
+.search-input input {
+  font-size: 14px;
+  padding: 8px 12px;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.autocomplete-input::placeholder { color: rgba(255,255,255,0.6); }
+
+.autocomplete-input:focus {
+  box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.autocomplete-suggestion {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.45);
+  pointer-events: none;
+}
+
+/* ----------------- Overlay Panel ----------------- */
+.overlay {
+  position: absolute;
+  z-index: 1500;     
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 16px;
+  padding: 16px 16px;
+  width: 100%;              /* Responsive width */
+  max-width: 420px;         /* Don’t exceed on desktop */
+  max-height: 80vh; 
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  pointer-events: auto; 
+  color: #fff;   
+  box-sizing: border-box;   /* Avoid padding overflow */
+  transition: all 0.3s ease;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+  /* hide scrollbars visually */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge legacy */
+}
+
+/* WebKit scrollbar hide */
+.overlay::-webkit-scrollbar { display: none; }
+
+.overlay h3 { color: #fff; font-weight: 600; }
+
+/* Desktop placement: top-right corner */
+.overlay-tr { 
+  top: 16px; 
+  right: 16px; 
+}
+
+/* ----------------- Charts ----------------- */
+.chart-block {
+  margin-bottom: 16px;
+  height: 180px; /* Let parent control height */
+}
+
+.chart-block canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ----------------- Mobile ----------------- */
+@media (max-width: 768px) {
+  .overlay {
+    width: calc(100% - 24px);
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 12px;
+    max-height: 40%; 
+  }
+
+  .chart-block {
+    height: 140px; /* smaller charts */
+  }
+
+  .overlay h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .search-bar {
+    width: 90%;
+    top: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    max-height: 45%; 
+    font-size: 0.9rem;
+  }
+
+  .chart-block {
+    height: 120px; 
+  }
+
+  .search-input input {
+    font-size: 12px;
+  }
 }

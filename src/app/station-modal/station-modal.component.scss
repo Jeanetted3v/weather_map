@@ -13,3 +13,140 @@
   transform: scale(0.95);
   transition: opacity 200ms ease, transform 200ms ease;
 }
+
+/* ===== X button to close this modal ===== */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px; /* use default position; we'll hide the scrollbar */
+  background: transparent; /* no circular fill */
+  border-radius: 50%;
+  color: #fff;
+  border: none; /* remove circle ring */
+  outline: none;
+  box-shadow: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.close-btn:hover {
+  background: transparent; /* keep clean icon only */
+}
+
+.close-btn:focus { outline: none; box-shadow: none; }
+.close-btn:focus-visible { outline: none; box-shadow: none; }
+
+
+
+/* ===== Glass panel style ===== */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  margin: 12px 0;
+}
+
+/* ===== Glassy Modal Container ===== */
+/* ===== Glassy Modal Container (Angular Material v15+ MDC) ===== */
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  color: #fff;
+  max-height: 90vh;
+  overflow: auto; /* enable scroll but hide bar visually below */
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge legacy */
+}
+
+/* WebKit scrollbar hide */
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface::-webkit-scrollbar { display: none; }
+
+/* If the inner content scrolls, hide its bar too */
+.content { scrollbar-width: none; -ms-overflow-style: none; }
+.content::-webkit-scrollbar { display: none; }
+
+/* Keep overlay/backdrop above the map and blurred */
+::ng-deep .cdk-overlay-container { z-index: 3000 !important; }
+::ng-deep .cdk-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(6px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05); /* almost black glass */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* ===== Text styling for glass background ===== */
+h2, h3 {
+  color: #fff;
+  font-weight: 600;
+}
+
+p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+
+/* ===== Ensure modal is always above map overlays ===== */
+::ng-deep .cdk-overlay-container {
+  z-index: 3000 !important;  /* higher than map overlay (1500) */
+}
+
+/* ===== Backdrop styling for modal ===== */
+::ng-deep .cdk-overlay-backdrop {
+  background: rgba(0, 0, 0, 0.4) !important; /* semi-transparent black */
+  backdrop-filter: blur(6px);                /*  blur map behind */
+}
+
+
+/* ===== Responsive Modal ===== */
+
+/* On small screens (mobile), make modal behave like a drawer */
+@media (max-width: 768px) {
+  ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0;
+    padding: 12px;
+  }
+}
+/* For smaller phones */
+@media (max-width: 600px) {
+  h2, h3 { font-size: 1.2rem; }
+  p { font-size: 0.9rem; }
+}
+
+/* ===== Mini Map Styling ===== */
+#mini-map {
+  height: 200px;
+  width: 100%;
+  border-radius: 12px;
+  margin: 16px 0;
+  box-shadow: none; /* card removed; keep map clean */
+}
+
+/* ===== Chart Styling ===== */
+canvas {
+  background-color: transparent !important;
+}

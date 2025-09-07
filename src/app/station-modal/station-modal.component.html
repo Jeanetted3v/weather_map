@@ -1,18 +1,23 @@
 <mat-dialog-content class="content" animate.enter="fade-in" animate.leave="fade-out">
+  <!-- Close (X) icon button -->
+  <button (click)="close()" class="close-btn" aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
+  
   <h2>{{ station.name }}</h2>
   <p>Lat: {{ station.lat }} | Lon: {{ station.lon }}</p>
 
-  <div *ngIf="forecastText">
-    <h3>2-Hour Forecast</h3>
-    <p>{{ forecastText }}</p>
-  </div>
-
-  <div *ngIf="openMeteoData" style="margin-top: 16px;">
+  <!-- Mini map (no card wrapper) -->
+  <div id="mini-map"></div>
+  
+  <div *ngIf="openMeteoData" class="glass-card">
     <h3>Recent Weather (Open-Meteo)</h3>
-    <canvas baseChart [data]="lineChartData" chartType="line"></canvas>
-  </div>
+    <canvas baseChart
+      [data]="lineChartData"
+      [options]="lineChartOptions"
+      [type]="'line'">
+    </canvas>
+  </div>  
+  
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="close()">Close</button>
-</mat-dialog-actions>
