@@ -10,14 +10,16 @@
   <!-- Mini map (no card wrapper) -->
   <div id="mini-map"></div>
   
-  <div *ngIf="openMeteoData" class="glass-card">
-    <h3>Recent Weather (Open-Meteo)</h3>
-    <canvas baseChart
-      [data]="lineChartData"
-      [options]="lineChartOptions"
-      [type]="'line'">
-    </canvas>
-  </div>  
+  @if (openMeteoData) {
+    <div class="glass-card">
+      <h3>Recent Weather (Open-Meteo)</h3>
+      <canvas baseChart
+        [data]="lineChartData"
+        [options]="lineChartOptions"
+        [type]="'line'">
+      </canvas>
+    </div>
+  }
   
 </mat-dialog-content>
 
