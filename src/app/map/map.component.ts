@@ -146,10 +146,16 @@ export class MapComponent implements OnInit {
     });
 
     // load station list dynamically
-    this.weather.getSingaporeStations().subscribe((stations: Station[]) => {
-      this.stations = stations;
-      if (this.map) {
-        this.plotStations();
+    this.weather.getSingaporeStations().subscribe({
+      next: (stations: Station[]) => {
+        this.stations = stations;
+        if (this.map) {
+          this.plotStations();
+        }
+      },
+      error: (err) => {
+        console.error('getSingaporeStations failed', err);
+        this.stations = [];
       }
     });
   }
@@ -210,7 +216,8 @@ export class MapComponent implements OnInit {
 
   // Load Singapore-wide data 
   private loadSingaporeWeather() {
-    this.weather.getSingaporeForecast10Days().subscribe((r: any) => {
+    this.weather.getSingaporeForecast10Days().subscribe({
+      next: (r: any) => {
       console.log("API response", r);
   
       const dailyTimes = (r.daily?.time ?? []).map((t: string) => new Date(t));
@@ -301,7 +308,11 @@ export class MapComponent implements OnInit {
           },
         ],
       };
-    });
+    },
+    error: (err) => {
+      console.error('getSingaporeForecast10Days failed', err);
+      this.sgWeatherData = null;
+    }});
   }
 
   // Autocomplete to filter station

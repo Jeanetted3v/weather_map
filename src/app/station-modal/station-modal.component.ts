@@ -57,18 +57,28 @@ export class StationModalComponent implements OnInit {
   };
 
   // chart options
-  // chart options
   public lineChartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: window.innerWidth < 600 ? 1.6 : 2.4,
+    layout: { padding: { top: 8, right: 8, bottom: 6, left: 6 } },
+    elements: {
+      point: {
+        radius: window.innerWidth < 600 ? 2 : 3,
+        hoverRadius: window.innerWidth < 600 ? 3 : 5
+      }
+    },
     plugins: {
       legend: {
+        display: window.innerWidth >= 420,
         position: 'top',
         labels: { color: 'rgba(255, 255, 255, 0.75)' }
       },
       title: {
         display: true,
-        text: 'Recent 72 Hours: Temp & Radiation',
-        color: 'rgba(255, 255, 255, 0.85)'
+        text: 'Next 72 Hours: Temp & Radiation',
+        color: 'rgba(255, 255, 255, 0.85)',
+        font: { size: window.innerWidth < 600 ? 12 : 16 }
       },
       tooltip: {
         callbacks: {
@@ -96,6 +106,7 @@ export class StationModalComponent implements OnInit {
           autoSkip: true,
           maxTicksLimit: window.innerWidth < 600 ? 6 : 12,
           color: 'rgba(255, 255, 255, 0.65)',
+          font: { size: window.innerWidth < 600 ? 10 : 12 },
           callback: function (value) {
             const date = new Date(value as number);
             if (date.getHours() === 0) {
@@ -119,7 +130,7 @@ export class StationModalComponent implements OnInit {
           text: 'Temperature (°C)',
           color: 'rgba(255, 255, 255, 0.8)'
         },
-        ticks: { color: 'rgba(255, 255, 255, 0.65)' },
+        ticks: { color: 'rgba(255, 255, 255, 0.65)', font: { size: window.innerWidth < 600 ? 10 : 12 } },
         grid: { color: 'rgba(255, 255, 255, 0.08)' },
         border: { color: 'rgba(255, 255, 255, 0.2)' }
       },
@@ -136,7 +147,7 @@ export class StationModalComponent implements OnInit {
           text: 'Radiation (W/m²)',
           color: 'rgba(255, 255, 255, 0.8)'
         },
-        ticks: { color: 'rgba(255, 255, 255, 0.65)' }
+        ticks: { color: 'rgba(255, 255, 255, 0.65)', font: { size: window.innerWidth < 600 ? 10 : 12 } }
       }
     },
     backgroundColor: 'transparent'
@@ -160,26 +171,45 @@ export class StationModalComponent implements OnInit {
   }
 
   private loadForecast() {
-    this.weather.getSingaporeForecast().subscribe((forecasts: any[]) => {
-      const match = forecasts.find(f => f.area === this.station.name);
-      this.forecastText = match ? match.forecast : 'No forecast available';
+    this.weather.getSingaporeForecast().subscribe({
+      next: (forecasts: any[]) => {
+        const match = forecasts.find(f => f.area === this.station.name);
+        this.forecastText = match ? match.forecast : 'No forecast available';
+      },
+      error: (err) => {
+        console.error('getSingaporeForecast failed', err);
+        this.forecastText = 'Forecast unavailable';
+      }
     });
   }
 
   private loadOpenMeteo() {
     const today = new Date();
-    const start = new Date(today);
-    start.setDate(today.getDate() - 2);  // data from last 2 days
+    const start = new Date(today);     // start today
+    const end = new Date(today);
+    end.setDate(today.getDate() + 3);  // next 72 hours ≈ 3 days
     const startStr = start.toISOString().slice(0, 10);
-    const endStr = today.toISOString().slice(0, 10);
+    const endStr = end.toISOString().slice(0, 10);
 
     this.weather.getOpenMeteo(this.station.lat, this.station.lon, startStr, endStr)
-      .subscribe((r: any) => {
-        this.openMeteoData = r;
+      .subscribe({
+        next: (r: any) => {
+          this.openMeteoData = r;
 
-        const hours = r.hourly?.time ?? [];
-        const rad = r.hourly?.direct_radiation ?? [];
-        const temp = r.hourly?.temperature_2m ?? [];
+        let hours: string[] = r.hourly?.time ?? [];
+        let rad: number[] = r.hourly?.direct_radiation ?? [];
+        let temp: number[] = r.hourly?.temperature_2m ?? [];
+
+        // Slice to next 72 hours from now
+        const now = new Date();
+        const nowIsoHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours())
+          .toISOString()
+          .slice(0, 13); // YYYY-MM-DDTHH
+        const startIdx = Math.max(0, hours.findIndex((t: string) => t.startsWith(nowIsoHour)));
+        const endIdx = startIdx > -1 ? startIdx + 72 : 72;
+        hours = hours.slice(startIdx, endIdx);
+        rad = rad.slice(startIdx, endIdx);
+        temp = temp.slice(startIdx, endIdx);
 
         this.lineChartData = {
           labels: hours,
@@ -219,7 +249,12 @@ export class StationModalComponent implements OnInit {
             }
           ]
         };
-      });
+      },
+      error: (err) => {
+        console.error('getOpenMeteo failed', err);
+        this.openMeteoData = null;
+      }
+    });
   }
 
   // mini map setup

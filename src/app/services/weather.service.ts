@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { map, Observable, catchError, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,11 @@ export class WeatherService {
           lat: a.label_location.latitude,
           lon: a.label_location.longitude
         }))
-      )
+      ),
+      catchError(err => {
+        console.error('getSingaporeStations error', err);
+        return throwError(() => err);
+      })
     );
   }
 
@@ -41,7 +45,12 @@ export class WeatherService {
       `start_date=${start}`,
       `end_date=${end}`
     ];
-    return this.http.get(`${this.openMeteoApi}?${params.join('&')}`);
+    return this.http.get(`${this.openMeteoApi}?${params.join('&')}`).pipe(
+      catchError(err => {
+        console.error('getSingaporeForecast10Days error', err);
+        return throwError(() => err);
+      })
+    );
   }
   
 
@@ -50,7 +59,11 @@ export class WeatherService {
    */
   getSingaporeForecast(): Observable<Array<{ area: string; forecast: string }>> {
     return this.http.get<any>(this.sgApi).pipe(
-      map(resp => resp.items[0].forecasts)
+      map(resp => resp.items[0].forecasts),
+      catchError(err => {
+        console.error('getSingaporeForecast error', err);
+        return throwError(() => err);
+      })
     );
   }
 
@@ -70,6 +83,11 @@ export class WeatherService {
     if (end) params['end_date'] = end;
 
     const query = new URLSearchParams(params).toString();
-    return this.http.get<any>(`${this.openMeteoApi}?${query}`);
+    return this.http.get<any>(`${this.openMeteoApi}?${query}`).pipe(
+      catchError(err => {
+        console.error('getOpenMeteo error', err);
+        return throwError(() => err);
+      })
+    );
   }
 }
