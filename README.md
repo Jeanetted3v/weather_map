@@ -3,7 +3,7 @@
 ![Weather Map Demo](readme_assets/weather_map.gif)
 
 A web app to **visually explore Singapore's weather forecast**.  
-Built with **Angular (frontend)** and **Node.js (backend)**.
+Built with **Angular (frontend)**. 
 
 ---
 
@@ -35,7 +35,38 @@ Built with **Angular (frontend)** and **Node.js (backend)**.
 
 ## 🛠️ Development Setup
 
-Start a local dev server:
+### 1. Prerequisites
+- [Node.js](https://nodejs.org/) (includes `npm`)
+- [Angular CLI](https://angular.dev/cli) installed globally:
+  ```bash
+  npm install -g @angular/cli
+  ```
 
+### 2. Clone the repository
+```bash
+git clone https://github.com/your-username/weather-map.git
+cd weather-map
+```
+
+### 3. Install dependencies
+```bash
+npm install
+```
+
+### 4. Start the local dev server
 ```bash
 ng serve
+```
+Then open [http://localhost:4200](http://localhost:4200) in your browser.
+The app will auto-reload as you edit the source files.
+
+
+## 🏗️ Build for Production
+
+To create an optimized build of the app, run:
+
+```bash
+ng build
+```
+The production files will be generated inside the `dist/` folder.
+You can deploy the contents of dist/weather-map/ to any static hosting service such as Netlify, Vercel, or GitHub Pages.
