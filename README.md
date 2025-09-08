@@ -1,59 +1,41 @@
-# MapAngular
+# 🌦️ Weather Map
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+![Weather Map Demo](readme_assets/weather_map.gif)
 
-## Development server
+A web app to **visually explore Singapore's weather forecast**.  
+Built with **Angular (frontend)** and **Node.js (backend)**.
 
-To start a local development server, run:
+---
+
+## ✨ Features
+
+- 🗺️ **Interactive Map**  
+  Displays all official weather stations across Singapore.  
+
+- 📊 **Forecast Charts (10 days)**  
+  - Solar Radiation  
+  - Average Humidity  
+  - Minimum & Maximum Temperature  
+
+- 🔍 **Station-Specific Forecast**  
+  Click on any station marker to view a **Mini Map of each weather station** and corresponding **3-day weather forecast**.  
+
+---
+
+## 🚀 Tech Stack
+
+- **Frontend:** [Angular](https://angular.dev) (v20.2.2, generated via Angular CLI)  
+- **APIs:**  
+  - [NEA / data.gov.sg](https://data.gov.sg/datasets?groups=environment) — official 2-hour weather forecast  
+  - [Open-Meteo](https://open-meteo.com/) — global weather and climate data  
+- **Runtime:** Node.js (used by Angular CLI for local dev server, but no separate backend)  
+
+
+---
+
+## 🛠️ Development Setup
+
+Start a local dev server:
 
 ```bash
 ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

@@ -264,7 +264,7 @@ export class MapComponent implements OnInit {
         datasets: [
           {
             data: dailyRadiation,
-            label: 'Daily Radiation (relative units)',
+            label: 'Solar Radiation (relative units)',
             borderColor: '#f39c12',
             backgroundColor: this.createGradient('#f39c12'), 
             pointBackgroundColor: '#f39c12',
