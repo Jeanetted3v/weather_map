@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { WeatherService } from '../services/weather.service';
 import { ChartConfiguration, Chart } from 'chart.js';
+import 'chartjs-adapter-date-fns';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NgChartsModule } from 'ng2-charts';
@@ -100,27 +101,32 @@ export class StationModalComponent implements OnInit {
         type: 'time',
         time: {
           unit: 'hour',
-          displayFormats: { hour: 'MMM d HH:mm', day: 'MMM d' }
+          displayFormats: { hour: 'HH:mm', day: 'MMM d' }
         },
         ticks: {
           autoSkip: true,
           maxTicksLimit: window.innerWidth < 600 ? 6 : 12,
           color: 'rgba(255, 255, 255, 0.65)',
           font: { size: window.innerWidth < 600 ? 10 : 12 },
-          callback: function (value) {
+          callback: function (value, index, ticks) {
+            const tick: any = ticks[index];
             const date = new Date(value as number);
-            if (date.getHours() === 0) {
+            // Show date on major ticks (midnight) else HH:mm
+            if (tick && (tick.major || date.getHours() === 0)) {
               return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
             }
             return new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date);
-          }
+          },
+          major: { enabled: true }
         },
         grid: {
           color: 'rgba(255, 255, 255, 0.08)'
         },
         border: {
           color: 'rgba(255, 255, 255, 0.2)'
-        }
+        },
+        bounds: 'data',
+        offset: true
       },
       y: {
         type: 'linear',
@@ -202,17 +208,17 @@ export class StationModalComponent implements OnInit {
 
         // Slice to next 72 hours from now
         const now = new Date();
-        const nowIsoHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours())
-          .toISOString()
-          .slice(0, 13); // YYYY-MM-DDTHH
-        const startIdx = Math.max(0, hours.findIndex((t: string) => t.startsWith(nowIsoHour)));
+        const roundedNow = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
+        const startIdx = Math.max(0, hours.findIndex((t: string) => new Date(t).getTime() === roundedNow.getTime()));
         const endIdx = startIdx > -1 ? startIdx + 72 : 72;
         hours = hours.slice(startIdx, endIdx);
         rad = rad.slice(startIdx, endIdx);
         temp = temp.slice(startIdx, endIdx);
 
+        const labelsAsDates = hours.map((t: string) => new Date(t));
+
         this.lineChartData = {
-          labels: hours,
+          labels: labelsAsDates,
           datasets: [
             {
               type: 'line',
